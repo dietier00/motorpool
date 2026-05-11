@@ -11,12 +11,12 @@ RUN npm install
 
 # Copy application files
 COPY resources/ ./resources/
+COPY assets/ ./assets/
 COPY vite.config.js postcss.config.js tailwind.config.js ./
 COPY jsconfig.json ./
 
 # Build assets
 RUN npm run build
-
 
 # Stage 2: PHP application
 FROM php:8.3-fpm-alpine
