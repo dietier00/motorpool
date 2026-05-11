@@ -39,6 +39,8 @@ RUN apk add --no-cache \
     nginx \
     supervisor
 
+RUN docker-php-ext-install pdo pdo_mysql
+
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
     docker-php-ext-install -j$(nproc) \
