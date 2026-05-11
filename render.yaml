@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: vehicle-management
+    runtime: docker
+    plan: standard
+    healthCheckPath: /
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: LOG_CHANNEL
+        value: stack
+      - key: CACHE_STORE
+        value: file
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: DB_CONNECTION
+        # Set to sqlite for SQLite or provide PostgreSQL/MySQL connection
+        value: sqlite
+databases:
+  - name: vehicle-db
+    databaseName: vehicle_management
+    plan: standard
+    # Uncomment if using PostgreSQL
+    # region: oregon
+    # plan: standard

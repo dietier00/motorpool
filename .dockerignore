@@ -1,0 +1,14 @@
+/.git
+/.gitignore
+/node_modules
+/vendor
+/.env
+/.env.*.local
+/.vscode
+/.idea
+/storage/logs/*
+/bootstrap/cache/*
+/public/hot
+docker-compose.yml
+.DS_Store
+*.log
