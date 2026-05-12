@@ -39,6 +39,7 @@ RUN apk add --no-cache \
     git \
     postgresql-dev \
     sqlite-dev \
+    gettext \
     nginx \
     supervisor
 
