@@ -6,6 +6,9 @@ WORKDIR /build
 # Copy package files
 COPY package.json package-lock.json ./
 
+# Copy CA pem file
+COPY globalsignrootca.pem ./
+
 # Install dependencies
 RUN npm install
 
