@@ -19,6 +19,8 @@ services:
       - key: DB_CONNECTION
         # Set to sqlite for SQLite or provide PostgreSQL/MySQL connection
         value: mysql
+      - key: APP_URL
+        value: https://scpamotorpool.onrender.com
 databases:
   - name: vehicle-db
     databaseName: vehicle_management
