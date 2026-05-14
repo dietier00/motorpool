@@ -16,7 +16,7 @@ fi
 # php /app/artisan migrate --force
 
 # 3. Production Optimizations
-php /app/artisan config:cache
+# php /app/artisan config:cache
 # php artisan route:cache
 # php artisan view:cache
 
