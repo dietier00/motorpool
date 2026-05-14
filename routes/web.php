@@ -48,39 +48,39 @@ $dashboardData = function () {
 
     $trendEnd = now()->endOfMonth();
 
-    // Query actual maintenance records
+    // Query actual maintenance records and sum costs
     $maintenanceRecords = \App\Models\Maintenance::where('service_type', 'maintenance')
         ->whereBetween('service_date', [$trendStart, $trendEnd])
-        ->get(['service_date']);
+        ->get(['service_date', 'cost']);
 
     $inspectionRecords = \App\Models\Maintenance::where('service_type', 'inspection')
         ->whereBetween('service_date', [$trendStart, $trendEnd])
-        ->get(['service_date']);
+        ->get(['service_date', 'cost']);
 
     $fuelRecords = \App\Models\FuelLog::whereBetween('date', [$trendStart, $trendEnd])
-        ->get(['date']);
+        ->get(['date', 'total_cost']);
 
-    // Populate maintenance trend
+    // Populate maintenance trend (sum costs)
     foreach ($maintenanceRecords as $record) {
         $monthKey = \Illuminate\Support\Carbon::parse($record->service_date)->format('Y-m');
         if (isset($indexByMonth[$monthKey])) {
-            $maintenanceTrend[$indexByMonth[$monthKey]] += 1;
+            $maintenanceTrend[$indexByMonth[$monthKey]] += $record->cost ?? 0;
         }
     }
 
-    // Populate inspection trend
+    // Populate inspection trend (sum costs)
     foreach ($inspectionRecords as $record) {
         $monthKey = \Illuminate\Support\Carbon::parse($record->service_date)->format('Y-m');
         if (isset($indexByMonth[$monthKey])) {
-            $inspectionTrend[$indexByMonth[$monthKey]] += 1;
+            $inspectionTrend[$indexByMonth[$monthKey]] += $record->cost ?? 0;
         }
     }
 
-    // Populate fuel trend
+    // Populate fuel trend (sum costs)
     foreach ($fuelRecords as $record) {
         $monthKey = \Illuminate\Support\Carbon::parse($record->date)->format('Y-m');
         if (isset($indexByMonth[$monthKey])) {
-            $fuelTrend[$indexByMonth[$monthKey]] += 1;
+            $fuelTrend[$indexByMonth[$monthKey]] += $record->total_cost ?? 0;
         }
     }
 

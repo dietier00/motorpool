@@ -324,30 +324,39 @@ export default function DashboardIndex({ stats, vehicles, activities, serviceTre
     const gridColor     = isDark ? 'rgba(148,163,184,0.1)' : 'rgba(148,163,184,0.2)';
     const tooltipTheme  = isDark ? 'dark' : 'light';
 
-    const barOptions = {
-        chart: { type: 'bar', stacked: true, toolbar: { show: false }, fontFamily: 'Outfit, sans-serif', background: 'transparent' },
+    const areaOptions = {
+        chart: { type: 'area', toolbar: { show: false }, fontFamily: 'Outfit, sans-serif', background: 'transparent' },
         colors: ['#f59e0b', '#3b82f6', '#10b981'],
-        plotOptions: { bar: { borderRadius: 4, columnWidth: '52%' } },
         dataLabels: { enabled: false },
+        stroke: { curve: 'smooth', width: 2 },
+        fill: { type: 'gradient', gradient: { shade: 'light', type: 'vertical', opacityFrom: 0.4, opacityTo: 0.1 } },
         grid: { borderColor: gridColor, strokeDashArray: 4, xaxis: { lines: { show: false } } },
         xaxis: {
             categories: trendLabels,
             labels: { style: { colors: chartColors, fontSize: '11px', fontFamily: 'Outfit, sans-serif' } },
             axisBorder: { show: false }, axisTicks: { show: false },
         },
-        yaxis: { labels: { style: { colors: chartColors, fontSize: '11px', fontFamily: 'Outfit, sans-serif' } } },
+        yaxis: {
+            labels: {
+                style: { colors: chartColors, fontSize: '11px', fontFamily: 'Outfit, sans-serif' },
+                formatter: (value) => `₱${value.toFixed(0)}`
+            }
+        },
         legend: {
             position: 'top', horizontalAlign: 'left', fontSize: '12px', fontFamily: 'Outfit, sans-serif',
             labels: { colors: chartColors },
             markers: { size: 6, shape: 'circle' },
         },
-        tooltip: { theme: tooltipTheme },
+        tooltip: {
+            theme: tooltipTheme,
+            y: { formatter: (value) => `₱${value.toFixed(2)}` }
+        },
     };
 
-    const barSeries = [
-        { name: 'Maintenance', data: maintenanceSeries },
-        { name: 'Inspection',  data: inspectionSeries },
-        { name: 'Fuel',        data: fuelSeries },
+    const areaSeries = [
+        { name: 'Maintenance Costs', data: maintenanceSeries },
+        { name: 'Inspection Costs',  data: inspectionSeries },
+        { name: 'Fuel Costs',        data: fuelSeries },
     ];
 
     // Stat cards config
@@ -359,9 +368,9 @@ export default function DashboardIndex({ stats, vehicles, activities, serviceTre
             image: innovaImage,
         },
         {
-            label: 'Fuel Stocks',
-            value: totalFuel,
-            note: 'Total refills in 6 months',
+            label: 'Fuel Expenses',
+            value: `₱${totalFuel.toFixed(0)}`,
+            note: 'Total fuel costs in 6 months',
             trend: 8,
             accent: 'green',
             icon: 'M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zM1 1h4l2.68 13.39a2 2 0 001.97 1.61h9.72a2 2 0 001.97-1.61L23 6H6',
@@ -407,23 +416,23 @@ export default function DashboardIndex({ stats, vehicles, activities, serviceTre
                     <div className="lg:col-span-2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-2">
                             <div>
-                                <h2 className="text-base font-bold text-slate-900 dark:text-white">Service & Fuel Events</h2>
-                                <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">Verified history · last 6 months</p>
+                                <h2 className="text-base font-bold text-slate-900 dark:text-white">Service & Fuel Costs</h2>
+                                <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500">Operational expenses · last 6 months</p>
                             </div>
                             <div className="flex flex-wrap gap-2">
                                 {[
-                                    { label: 'Maintenance', count: totalMaintenance, cls: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' },
-                                    { label: 'Inspection',  count: totalInspection,  cls: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' },
-                                    { label: 'Fuel',        count: totalFuel,        cls: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' },
-                                ].map(({ label, count, cls }) => (
+                                    { label: 'Maintenance', cost: totalMaintenance, cls: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400' },
+                                    { label: 'Inspection',  cost: totalInspection,  cls: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400' },
+                                    { label: 'Fuel',        cost: totalFuel,        cls: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' },
+                                ].map(({ label, cost, cls }) => (
                                     <span key={label} className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[11px] font-bold ${cls}`}>
                                         {label}
-                                        <span className="rounded-md bg-white/60 dark:bg-black/20 px-1">{count}</span>
+                                        <span className="rounded-md bg-white/60 dark:bg-black/20 px-1">₱{cost.toFixed(0)}</span>
                                     </span>
                                 ))}
                             </div>
                         </div>
-                        <ReactApexChart options={barOptions} series={barSeries} type="bar" height={248} />
+                        <ReactApexChart options={areaOptions} series={areaSeries} type="area" height={248} />
                     </div>
 
                     {/* Fleet Utilization Summary */}
@@ -538,8 +547,8 @@ export default function DashboardIndex({ stats, vehicles, activities, serviceTre
                             badgeColor: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
                         },
                         {
-                            label: 'Fuel Refills (6 mo)',
-                            value: totalFuel,
+                            label: 'Fuel Costs (6 mo)',
+                            value: `₱${totalFuel.toFixed(0)}`,
                             icon: 'M13 10V3L4 14h7v7l9-11h-7z',
                             badge: 'Fuel',
                             color: 'text-emerald-600 dark:text-emerald-400',
