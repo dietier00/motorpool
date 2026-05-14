@@ -4,19 +4,16 @@ import DashboardLayout from '../../Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import VehicleForm from './VehicleForm';
 import { QRCodeSVG } from 'qrcode.react';
+import React from 'react';
 
 const STATUSES = ['active', 'maintenance', 'available'];
 
 const statusStyle = {
-    active:      'bg-emerald-500/10 text-emerald-400',
-    maintenance: 'bg-amber-500/10 text-amber-400',
-    available:   'bg-cyan-500/10 text-cyan-400',
+    active:      'bg-green-100 text-green-800 border border-green-200 dark:bg-green-500/10 dark:text-green-400 dark:border-green-500/30',
+    maintenance: 'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-500/10 dark:text-yellow-400 dark:border-yellow-500/30',
+    available:   'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/30',
 };
-
 const skeletonRows = Array.from({ length: 6 });
-
-{/* a logic for making the vehicle table sorted in ascending order by default */}
-const [sortConfig, setSortConfig] = useState({ key: 'plate_num', direction: 'asc' });
 
 // ── Toast Component ──────────────────────────────────────────
 function Toast({ message, onClose }) {
@@ -305,18 +302,32 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                 </div>
                 <button
                     onClick={openAdd}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-semibold text-sm hover:from-cyan-400 hover:to-emerald-400 transition"
+                    className="relative inline-flex items-center justify-center px-4 py-2 overflow-hidden tracking-tighter text-white bg-gray-800 dark:bg-gray-500 rounded-md group"
                 >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Add Vehicle
+                    <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-orange-600 rounded-full group-hover:w-56 group-hover:h-56" />
+                    <span className="absolute bottom-0 left-0 h-full -ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-auto h-full opacity-100 object-stretch" viewBox="0 0 487 487">
+                            <path fillOpacity=".1" fillRule="nonzero" fill="#FFF" d="M0 .3c67 2.1 134.1 4.3 186.3 37 52.2 32.7 89.6 95.8 112.8 150.6 23.2 54.8 32.3 101.4 61.2 149.9 28.9 48.4 77.7 98.8 126.4 149.2H0V.3z" />
+                        </svg>
+                    </span>
+                    <span className="absolute top-0 right-0 w-12 h-full -mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="object-cover w-full h-full" viewBox="0 0 487 487">
+                            <path fillOpacity=".1" fillRule="nonzero" fill="#FFF" d="M487 486.7c-66.1-3.6-132.3-7.3-186.3-37s-95.9-85.3-126.2-137.2c-30.4-51.8-49.3-99.9-76.5-151.4C70.9 109.6 35.6 54.8.3 0H487v486.7z" />
+                        </svg>
+                    </span>
+                    <span className="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-200" />
+                    <span className="relative text-base font-semibold flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add Vehicle
+                    </span>
                 </button>
             </div>
 
             {/* ── Filters ── */}
             <div className="flex flex-wrap gap-3 mb-4">
-                <div className="relative flex-1 min-w-48">
+                <div className="relative flex-1 min-w-48 border-xl border-black">
                     <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 dark:text-slate-400"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -327,13 +338,13 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search plate, name, model..."
-                        className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl bg-white/5 border border-slate-200/70 dark:border-white/10 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 transition"
+                        className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl bg-white border-gray-500/40 dark:bg-gray-800 dark:border dark:border-gray-600 text-gray-900 dark:text-gray-300 placeholder:text-gray-500 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-200/30 transition"
                     />
                 </div>
                 <select
                     value={status}
                     onChange={e => setStatus(e.target.value)}
-                    className="px-3 py-2.5 text-sm rounded-xl bg-white/5 border border-slate-200/70 dark:border-white/10 text-slate-600 dark:text-slate-300 focus:outline-none focus:border-cyan-500/50 transition"
+                    className="px-3 py-2.5 text-sm rounded-xl bg-white border-gray-500/40 dark:bg-gray-800 dark:border dark:border-gray-600 text-black dark:text-gray-400 focus:outline-none focus:border-blue-200/30 transition"
                 >
                     <option value="">All statuses</option>
                     {STATUSES.map(s => (
@@ -345,14 +356,14 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
             </div>
 
             {/* ── Table ── */}
-            <div className="rounded-2xl border border-white/5 bg-white/[0.03] overflow-hidden">
+            <div className="rounded-2xl border border-gray-500/30 bg-white dark:bg-gray-800 dark:border-gray-600 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="border-b border-white/5">
                                 {TABLE_HEADERS.map(h => (
                                     <th key={h}
-                                        className="text-left text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-4 py-3 whitespace-nowrap">
+                                        className="text-left text-[10px] font-semibold text-black dark:text-slate-400 uppercase tracking-wider px-4 py-3 whitespace-nowrap">
                                         {h}
                                     </th>
                                 ))}
@@ -379,7 +390,6 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                             /* Empty state */
                             ) : vehicleRows.length === 0 ? (
                                 <tr>
-                                    {/* ✅ colSpan fixed to 9 (matches TABLE_HEADERS length) */}
                                     <td colSpan={9} className="text-center py-16 text-slate-500 dark:text-slate-400 text-sm">
                                         <svg className="w-10 h-10 mx-auto mb-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
@@ -394,7 +404,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                 <tr key={v.id} className="hover:bg-white/[0.02] transition group">
 
                                     {/* Plate No. */}
-                                    <td className="px-4 py-3 font-semibold text-cyan-300 whitespace-nowrap">
+                                    <td className="px-4 py-3 font-semibold text-slate-600 whitespace-nowrap">
                                         {v.plate_num}
                                     </td>
 
@@ -448,7 +458,6 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition">
 
-                                            {/* ✅ QR Code button — was missing */}
                                             <button
                                                 onClick={() => setQrTarget(v)}
                                                 className="p-1.5 rounded-lg border border-slate-200/70 dark:border-white/10 text-slate-500 dark:text-slate-400 dark:text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition"
