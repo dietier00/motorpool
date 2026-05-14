@@ -155,18 +155,38 @@ function DeleteConfirmModal({ target, onClose, onConfirm, isLoading }) {
 function QRModal({ vehicle, onClose }) {
     if (!vehicle) return null;
 
+    const qrUrl = `${window.location.origin}/vehicle/${vehicle.id}/scan`;
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl">
-                <h2 className="text-slate-900 dark:text-white">QR Modal</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            <div className="w-full max-w-md rounded-2xl border border-slate-200/70 dark:border-white/10 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
 
-                <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400">
-                    {vehicle.plate_num}
-                </p>
+                <div className="flex items-center justify-between border-b border-white/5 px-6 py-4">
+                    <div>
+                        <h2 className="text-base font-semibold text-slate-900 dark:text-white">QR Code</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                            {vehicle.plate_num} — {vehicle.name} {vehicle.model}
+                        </p>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition text-lg leading-none"
+                    >
+                        ✕
+                    </button>
+                </div>
 
-                <button onClick={onClose}>
-                    Close
-                </button>
+                <div className="px-6 py-6 flex flex-col items-center gap-4">
+                    <div className="p-4 bg-white rounded-xl border border-slate-200/50">
+                        <QRCodeSVG value={qrUrl} size={200} />
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+                        Scan this QR code to view vehicle information
+                    </p>
+                    <div className="text-xs text-slate-400 dark:text-slate-500 break-all text-center">
+                        {qrUrl}
+                    </div>
+                </div>
             </div>
         </div>
     );

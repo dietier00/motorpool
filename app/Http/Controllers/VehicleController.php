@@ -78,7 +78,38 @@ class VehicleController extends Controller
     public function scan($id)
     {
         $vehicle = \App\Models\Vehicle::with('driver')->findOrFail($id);
-        return view('vehicle.scan', compact('vehicle'));
+        
+        // Temporarily return HTML for QR code display
+        $html = "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Vehicle Information</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .vehicle-info { border: 1px solid #ccc; padding: 20px; border-radius: 10px; max-width: 400px; margin: 0 auto; }
+                h1 { color: #333; }
+                p { margin: 10px 0; }
+            </style>
+        </head>
+        <body>
+            <div class='vehicle-info'>
+                <h1>Vehicle Information</h1>
+                <p><strong>Name:</strong> {$vehicle->name}</p>
+                <p><strong>Model:</strong> {$vehicle->model}</p>
+                <p><strong>Plate Number:</strong> {$vehicle->plate_num}</p>
+                <p><strong>Year:</strong> {$vehicle->year}</p>
+                <p><strong>Status:</strong> {$vehicle->status}</p>
+                <p><strong>Driver:</strong> " . ($vehicle->driver ? $vehicle->driver->name : 'None') . "</p>
+                <p><strong>Recent Mileage:</strong> {$vehicle->recent_mileage}</p>
+                <p><strong>Present In:</strong> {$vehicle->present_in}</p>
+                <p><strong>Present Out:</strong> {$vehicle->present_out}</p>
+            </div>
+        </body>
+        </html>
+        ";
+        
+        return response($html)->header('Content-Type', 'text/html');
     }
 
     public function pdf($id)
