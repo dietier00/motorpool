@@ -24,6 +24,7 @@ class UpdateDriverRequest extends FormRequest
             'license_number' => 'required|string|max:50|unique:drivers,license_number,' . $this->driver->id,
             'cp_number' => 'required|string|max:20|unique:drivers,cp_number,' . $this->driver->id,
             'status' => 'required|in:available,on_trip,off_duty,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 

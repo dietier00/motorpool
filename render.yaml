@@ -18,7 +18,7 @@ services:
         value: cookie
       - key: DB_CONNECTION
         # Set to sqlite for SQLite or provide PostgreSQL/MySQL connection
-        value: sqlite
+        value: mysql
 databases:
   - name: vehicle-db
     databaseName: vehicle_management

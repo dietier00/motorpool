@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import DriverForm from '@/Components/DriverForm';
 import DeleteConfirmation from '@/Components/DeleteConfirmation';
+import DriverCard from '@/Components/DriverCard';
 
 const STATUS_OPTIONS = [
     { value: 'available', label: 'Available', color: 'green' },
@@ -96,12 +97,12 @@ export default function Drivers() {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">Driver Personnel</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">Drivers</h2>}
         >
             <Head title="Drivers" />
 
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div className="py-10">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-5">
                     
                     {/* Header with Search and Add Button */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -145,78 +146,18 @@ export default function Drivers() {
                         </button>
                     </div>
 
-                    {/* Stats */}
-                    <div className="mb-6 p-4 bg-blue-50 border border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20 rounded-lg">
-                        <p className="text-sm text-blue-700 dark:text-blue-300">
-                            <span className="font-semibold">{totalDrivers}</span> total drivers
-                            {filters?.status && statusFilter !== 'all' && (
-                                <span> filtered by <span className="font-semibold">{getStatusLabel(statusFilter)}</span></span>
-                            )}
-                        </p>
-                    </div>
-
                     {/* Drivers Grid */}
                     {drivers.data && drivers.data.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                             {drivers.data.map(driver => (
-                                <div 
+                                <DriverCard 
                                     key={driver.id} 
-                                    className="bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-gray-200 dark:border-white/10 p-5 hover:shadow-md transition-shadow"
-                                >
-                                    {/* Driver Header */}
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-12 w-12 rounded-full bg-cyan-100 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-300 flex items-center justify-center font-bold text-lg">
-                                                {driver.name.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div>
-                                                <h4 className="text-gray-900 dark:text-slate-100 font-semibold text-sm">{driver.name}</h4>
-                                                <p className="text-xs text-gray-500 dark:text-slate-400">{driver.license_number}</p>
-                                            </div>
-                                        </div>
-                                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusColor(driver.status)}`}>
-                                            {getStatusLabel(driver.status)}
-                                        </span>
-                                    </div>
-
-                                    {/* Driver Info */}
-                                    <div className="space-y-3 mb-4">
-                                        <div className="flex items-start justify-between text-xs">
-                                            <span className="text-gray-500 dark:text-slate-400">License:</span>
-                                            <span className="text-gray-900 dark:text-slate-100 font-medium text-right">{driver.license_number}</span>
-                                        </div>
-                                        <div className="flex items-start justify-between text-xs">
-                                            <span className="text-gray-500 dark:text-slate-400">Phone:</span>
-                                            <span className="text-gray-900 dark:text-slate-100 font-medium text-right">
-                                                <a href={`tel:${driver.cp_number}`} className="hover:text-cyan-600 dark:hover:text-cyan-300">
-                                                    {driver.cp_number}
-                                                </a>
-                                            </span>
-                                        </div>
-                                        <div className="flex items-start justify-between text-xs">
-                                            <span className="text-gray-500 dark:text-slate-400">Joined:</span>
-                                            <span className="text-gray-900 dark:text-slate-100 font-medium">
-                                                {new Date(driver.created_at).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div className="flex gap-2 pt-4 border-t border-gray-100 dark:border-white/10">
-                                        <button 
-                                            onClick={() => handleOpenEditForm(driver)}
-                                            className="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-semibold py-2 rounded-lg transition-colors border border-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700"
-                                        >
-                                            Edit
-                                        </button>
-                                        <button 
-                                            onClick={() => handleOpenDeleteConfirm(driver)}
-                                            className="flex-1 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold py-2 rounded-lg transition-colors border border-red-200 dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/30 dark:hover:bg-red-500/20"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
+                                    driver={driver} 
+                                    getStatusColor={getStatusColor}
+                                    getStatusLabel={getStatusLabel}
+                                    handleOpenEditForm={handleOpenEditForm}
+                                    handleOpenDeleteConfirm={handleOpenDeleteConfirm}
+                                />
                             ))}
                         </div>
                     ) : (

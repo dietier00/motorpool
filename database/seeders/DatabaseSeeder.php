@@ -23,5 +23,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@scpa.com',
             'password' => bcrypt('password'),
         ]);
+
+        $this->call([
+            FuelStockSeeder::class,
+            MaintenanceSeeder::class,
+            FuelLogSeeder::class,
+        ]);
     }
 }

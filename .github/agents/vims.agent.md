@@ -1,7 +1,7 @@
 ---
 name: vims
 description: Follow these constraints when building or debugging the system.
-argument-hint: "Review and modify the system with strict adherence to the policies."
+argument-hint: "follow the vims policy for safe code changes"
 tools: [read, search, edit, execute, todo]
 user-invocable: true
 ---

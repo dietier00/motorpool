@@ -14,6 +14,7 @@ const navItems = [
 const reportItems = [
     { label: 'Analytics', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', href: '/reports' },
     { label: 'Maintenance', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', href: '/maintenance' },
+    { label: 'Fuel Logs', icon: 'M3 10l1.664-2.331A3 3 0 017.664 6h8.672a3 3 0 012.664 1.669L21 10M5 10v10a1 1 0 001 1h3m10-11v11a1 1 0 001 1h3m-4-12h.01M9 21h6', href: '/fuel' },
 ];
 
 const settingsItems = [
@@ -84,14 +85,14 @@ export default function DashboardLayout({ children, title = 'Dashboard' }) {
                 </nav>
 
                 {/* Profile Card Bottom component */}
-                <div className={`p-4 m-4 rounded-2xl ${isDark ? 'bg-slate-800/50 border border-slate-700/50' : 'bg-slate-50 border border-slate-100'}`}>
+                <div className={`p-2 m-4 rounded-xl ${isDark ? 'bg-slate-800/30 border border-[#255F38]' : 'bg-slate-50 border border-red-500'}`}>
                     <div className="flex items-center gap-3">
                         <img src={`https://ui-avatars.com/api/?name=${auth?.user?.name || 'A'}&background=random`} alt="Avatar" className="h-10 w-10 rounded-xl object-cover shadow-sm" />
                         <div className="flex-1 min-w-0">
                             <div className={`text-sm font-semibold truncate ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>{auth?.user?.name ?? 'Admin User'}</div>
                             <div className={`text-[11px] truncate ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>{auth?.user?.email ?? 'admin@scpa.local'}</div>
                         </div>
-                        <Link href="/logout" method="post" as="button" className={`p-2 rounded-lg transition-colors ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-red-400' : 'bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 shadow-sm'}`}>
+                        <Link href="/logout" method="post" as="button"  className={`p-2 rounded-lg transition-colors ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-red-400' : 'bg-white hover:bg-red-50 text-slate-400 hover:text-red-500 shadow-sm'}`}>
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
@@ -103,7 +104,7 @@ export default function DashboardLayout({ children, title = 'Dashboard' }) {
             {/* Main content */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
                 {/* Header */}
-                <header className={`flex items-center justify-between px-8 h-[88px] flex-shrink-0 transition-colors duration-300 z-30 ${isDark ? 'bg-[#0B1121]/80 backdrop-blur-md border-b border-slate-800' : 'bg-[#eef2f6]/80 backdrop-blur-md'}`}>
+                <header className={`flex items-center justify-between px-8 h-[58px] flex-shrink-0 transition-colors duration-300 z-30 ${isDark ? 'bg-[#0B1121]/80 backdrop-blur-md border-b border-slate-800' : 'bg-[#eef2f6]/80 backdrop-blur-md'}`}>
                     <div className="flex items-center gap-5">
                         <button onClick={() => setSidebarOpen(!sidebarOpen)} className={`p-2.5 rounded-xl transition-all ${isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-400' : 'bg-white hover:bg-slate-50 text-slate-600 shadow-sm'}`}>
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
@@ -131,7 +132,7 @@ export default function DashboardLayout({ children, title = 'Dashboard' }) {
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
                                 <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-slate-800"></span>
                             </button>
-                            <div className={`p-2.5 rounded-xl flex items-center ${isDark ? 'bg-slate-800' : 'bg-white shadow-sm'}`}>
+                            <div className={`p-2.5 rounded-xl flex items-center`}>
                                 <Switch />
                             </div>
                         </div>

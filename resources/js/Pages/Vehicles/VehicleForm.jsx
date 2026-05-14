@@ -77,7 +77,7 @@ export default function VehicleForm({
     return (
         <Modal show={show} onClose={onClose} maxWidth="md">
             <div className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                     {isEditing ? 'Edit Vehicle' : 'Add New Vehicle'}
                 </h3>
 
@@ -91,7 +91,7 @@ export default function VehicleForm({
                             value={data.plate_num}
                             onChange={(e) => setData('plate_num', e.target.value)}
                             placeholder="e.g., ABC-1234"
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-0 transition"
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                             isFocused={!isEditing}
                         />
                         <InputError message={errors.plate_num} className="mt-1" />
@@ -105,8 +105,8 @@ export default function VehicleForm({
                             type="text"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
-                            placeholder="e.g., Company Van"
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-0 transition"
+                            placeholder="e.g., Toyota, Isuzu"
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                         />
                         <InputError message={errors.name} className="mt-1" />
                     </div>
@@ -119,8 +119,8 @@ export default function VehicleForm({
                             type="text"
                             value={data.model}
                             onChange={(e) => setData('model', e.target.value)}
-                            placeholder="e.g., Toyota Hiace"
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-0 transition"
+                            placeholder="e.g., Innova, Traviz,"
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                         />
                         <InputError message={errors.model} className="mt-1" />
                     </div>
@@ -137,7 +137,7 @@ export default function VehicleForm({
                                 placeholder="2024"
                                 min="1990"
                                 max={new Date().getFullYear() + 1}
-                                className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-0 transition"
+                                className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                             />
                             <InputError message={errors.year} className="mt-1" />
                         </div>
@@ -148,7 +148,7 @@ export default function VehicleForm({
                                 id="status"
                                 value={data.status}
                                 onChange={(e) => setData('status', e.target.value)}
-                                className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 focus:border-cyan-500/50 focus:ring-0 transition"
+                                className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                             >
                                 {STATUSES.map(s => (
                                     <option key={s} value={s}>
@@ -167,7 +167,7 @@ export default function VehicleForm({
                             id="driver_id"
                             value={data.driver_id}
                             onChange={(e) => setData('driver_id', e.target.value)}
-                            className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 focus:border-cyan-500/50 focus:ring-0 transition"
+                            className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                         >
                             <option value="">None</option>
                             {drivers.map(driver => (
@@ -190,7 +190,7 @@ export default function VehicleForm({
                                 onChange={(e) => setData('present_in', e.target.value)}
                                 placeholder="0"
                                 min="0"
-                                className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-0 transition"
+                                className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                             />
                             <InputError message={errors.present_in} className="mt-1" />
                         </div>
@@ -204,14 +204,14 @@ export default function VehicleForm({
                                 onChange={(e) => setData('present_out', e.target.value)}
                                 placeholder="0"
                                 min="0"
-                                className="mt-1 w-full px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 placeholder-slate-600 focus:border-cyan-500/50 focus:ring-0 transition"
+                                className="mt-1 w-full px-3 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 bg-white/5 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:border-cyan-500 dark:focus:border-cyan-500/50 focus:ring-0 transition"
                             />
                             <InputError message={errors.present_out} className="mt-1" />
                         </div>
                     </div>
 
                     {/* Form Actions */}
-                    <div className="flex gap-3 justify-end pt-4 border-t border-white/10">
+                    <div className="flex gap-3 justify-end pt-4 border-t border-slate-200/70 dark:border-white/10">
                         <SecondaryButton
                             type="button"
                             onClick={onClose}

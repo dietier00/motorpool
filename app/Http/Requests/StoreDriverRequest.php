@@ -24,6 +24,7 @@ class StoreDriverRequest extends FormRequest
             'license_number' => 'required|string|unique:drivers,license_number|max:50',
             'cp_number' => 'required|string|unique:drivers,cp_number|max:20',
             'status' => 'required|in:available,on_trip,off_duty,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 

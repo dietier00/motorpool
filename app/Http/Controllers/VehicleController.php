@@ -38,8 +38,8 @@ class VehicleController extends Controller
         $validated = $request->validate([
             'plate_num' => 'required|string|unique:vehicles,plate_num',
             'name' => 'required|string|max:100',
-            'model' => 'required|string|max:100',
-            'year' => 'required|integer|min:1990|max:' . (date('Y') + 1),
+            'model' => 'nullable|string|max:100',
+            'year' => 'nullable|integer|min:1990|max:' . (date('Y') + 1),
             'status' => 'required|in:active,maintenance,available',
             'driver_id' => 'nullable|exists:drivers,id',
             'present_in' => 'nullable|integer|min:0',
@@ -56,8 +56,8 @@ class VehicleController extends Controller
         $validated = $request->validate([
             'plate_num' => 'required|string|unique:vehicles,plate_num,' . $vehicle->id,
             'name' => 'required|string|max:100',
-            'model' => 'required|string|max:100',
-            'year' => 'required|integer|min:1990|max:' . (date('Y') + 1),
+            'model' => 'nullable|string|max:100',
+            'year' => 'nullable|integer|min:1990|max:' . (date('Y') + 1),
             'status' => 'required|in:active,maintenance,available',
             'driver_id' => 'nullable|exists:drivers,id',
             'present_in' => 'nullable|integer|min:0',

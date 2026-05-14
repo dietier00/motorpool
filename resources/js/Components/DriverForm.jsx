@@ -9,18 +9,20 @@ const STATUS_OPTIONS = [
 ];
 
 export default function DriverForm({ isOpen, onClose, driver, title }) {
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         name: driver?.name || '',
         license_number: driver?.license_number || '',
         cp_number: driver?.cp_number || '',
         status: driver?.status || 'available',
+        image: null,
+        _method: driver ? 'put' : 'post',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (driver) {
-            put(route('drivers.update', driver.id), {
+            post(route('drivers.update', driver.id), {
                 onSuccess: () => {
                     reset();
                     onClose();
@@ -125,6 +127,25 @@ export default function DriverForm({ isOpen, onClose, driver, title }) {
                         </select>
                         {errors.status && (
                             <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.status}</p>
+                        )}
+                    </div>
+
+                    {/* Image Field */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
+                            Profile Image
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setData('image', e.target.files[0])}
+                            className="w-full px-3 py-2 border border-gray-300 bg-white text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder-slate-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                        />
+                        {errors.image && (
+                            <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.image}</p>
+                        )}
+                        {driver?.image && !data.image && (
+                            <p className="text-xs text-gray-500 mt-2">Current image will be kept if no new image is selected.</p>
                         )}
                     </div>
 

@@ -40,7 +40,12 @@ class DriverController extends Controller
      */
     public function store(StoreDriverRequest $request)
     {
-        Driver::create($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('drivers', 'public');
+        }
+
+        Driver::create($data);
 
         return back()->with('success', 'Driver added successfully!');
     }
@@ -58,7 +63,15 @@ class DriverController extends Controller
      */
     public function update(UpdateDriverRequest $request, Driver $driver)
     {
-        $driver->update($request->validated());
+        $data = $request->validated();
+        if ($request->hasFile('image')) {
+            if ($driver->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($driver->image)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($driver->image);
+            }
+            $data['image'] = $request->file('image')->store('drivers', 'public');
+        }
+
+        $driver->update($data);
 
         return back()->with('success', 'Driver updated successfully!');
     }

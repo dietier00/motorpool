@@ -22,12 +22,12 @@ function Toast({ message, onClose }) {
         return () => clearTimeout(t);
     }, [onClose]);
     return (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-slate-900 px-5 py-3 shadow-xl text-sm text-emerald-400 animate-fade-in">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-white dark:bg-slate-900 px-5 py-3 shadow-xl text-sm text-emerald-400 animate-fade-in">
             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             {message}
-            <button onClick={onClose} className="ml-2 text-slate-500 hover:text-white">✕</button>
+            <button onClick={onClose} className="ml-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white">✕</button>
         </div>
     );
 }
@@ -39,128 +39,67 @@ function SkeletonBar({ className = '' }) {
     );
 }
 
-// ── QR Code Modal ────────────────────────────────────────────
-function QRModal({ vehicle, onClose }) {
+// ── Vehicle Details Modal ───────────────────────────────────
+function VehicleDetailsModal({ vehicle, onClose }) {
     if (!vehicle) return null;
 
-    const qrUrl = `${window.location.origin}/vehicle/${vehicle.id}/scan`;
-
-    const handlePrint = () => {
-        const svgEl = document.getElementById(`qr-svg-${vehicle.id}`);
-        const win = window.open('', '_blank');
-        win.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>QR Code — ${vehicle.plate_num}</title>
-                <style>
-                    * { box-sizing: border-box; margin: 0; padding: 0; }
-                    body {
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                        display: flex; flex-direction: column;
-                        align-items: center; justify-content: center;
-                        min-height: 100vh; background: #fff; padding: 40px;
-                    }
-                    .badge {
-                        background: #f1f5f9; border-radius: 8px;
-                        padding: 4px 14px; font-size: 11px;
-                        color: #64748b; font-weight: 600;
-                        letter-spacing: 0.08em; text-transform: uppercase;
-                        margin-bottom: 16px;
-                    }
-                    .plate {
-                        font-size: 32px; font-weight: 800;
-                        letter-spacing: 0.12em; margin-bottom: 6px; color: #0f172a;
-                    }
-                    .sub { font-size: 14px; color: #64748b; margin-bottom: 28px; }
-                    .qr-box {
-                        padding: 20px; border: 2px solid #e2e8f0;
-                        border-radius: 20px; background: #fff;
-                        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-                    }
-                    .footer {
-                        margin-top: 24px; font-size: 11px;
-                        color: #94a3b8; text-align: center; max-width: 260px;
-                    }
-                    .divider {
-                        width: 40px; height: 2px; background: #e2e8f0;
-                        border-radius: 2px; margin: 20px auto;
-                    }
-                    svg { display: block; }
-                    @media print { body { padding: 20px; } }
-                </style>
-            </head>
-            <body>
-                <div class="badge">SCPA Motor Pool</div>
-                <div class="plate">${vehicle.plate_num}</div>
-                <div class="sub">${vehicle.name} ${vehicle.model} &middot; ${vehicle.year}</div>
-                <div class="qr-box">${svgEl?.outerHTML ?? ''}</div>
-                <div class="divider"></div>
-                <div class="footer">Scan to view full vehicle information — Fleet Operations Dashboard</div>
-            </body>
-            </html>
-        `);
-        win.document.close();
-        win.focus();
-        setTimeout(() => { win.print(); win.close(); }, 400);
-    };
+    const statusText = (vehicle.status ?? 'available').charAt(0).toUpperCase() + (vehicle.status ?? 'available').slice(1);
+    const driverName = vehicle.driver?.name ?? vehicle.driver ?? '—';
+    const mileageText = vehicle.mileage ? `${Number(vehicle.mileage).toLocaleString()} km` : '—';
+    const odometerIn = vehicle.present_in ? `${Number(vehicle.present_in).toLocaleString()} km` : '—';
+    const odometerOut = vehicle.present_out ? `${Number(vehicle.present_out).toLocaleString()} km` : '—';
 
     return (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-slate-900 shadow-2xl overflow-hidden">
+            <div className="w-full max-w-2xl rounded-2xl border border-slate-200/70 dark:border-white/10 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
 
-                {/* Header */}
                 <div className="flex items-center justify-between border-b border-white/5 px-6 py-4">
                     <div>
-                        <h2 className="text-base font-semibold text-white">Vehicle QR Code</h2>
-                        <p className="text-xs text-slate-500 mt-0.5">
+                        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Vehicle Information</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             {vehicle.plate_num} — {vehicle.name} {vehicle.model}
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-slate-500 hover:text-white transition text-lg leading-none"
+                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white transition text-lg leading-none"
                     >
                         ✕
                     </button>
                 </div>
 
-                {/* QR Code Display */}
-                <div className="flex flex-col items-center px-8 py-8 gap-4">
-                    <div className="bg-white p-5 rounded-2xl shadow-lg">
-                        <QRCodeSVG
-                            id={`qr-svg-${vehicle.id}`}
-                            value={qrUrl}
-                            size={200}
-                            level="H"
-                            includeMargin={false}
-                        />
+                <div className="px-6 py-6 space-y-5">
+                    <div className="rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 via-slate-900 to-emerald-500/10 p-5">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300/80">Fleet Unit</p>
+                                <h3 className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{vehicle.plate_num}</h3>
+                                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{vehicle.name} {vehicle.model}</p>
+                            </div>
+                            <span className="inline-flex w-fit items-center rounded-full border border-slate-200/70 dark:border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200">
+                                {statusText}
+                            </span>
+                        </div>
                     </div>
-                    <div className="text-center space-y-1">
-                        <p className="text-xs text-slate-400 font-medium">Scan to view vehicle info</p>
-                        <p className="text-[10px] text-slate-600 break-all font-mono leading-relaxed">
-                            {qrUrl}
-                        </p>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <DetailCard label="Plate Number" value={vehicle.plate_num} tone="cyan" />
+                        <DetailCard label="Vehicle Name" value={`${vehicle.name} ${vehicle.model}`} />
+                        <DetailCard label="Year" value={vehicle.year} />
+                        <DetailCard label="Status" value={statusText} tone="emerald" />
+                        <DetailCard label="Driver" value={driverName} tone="amber" />
+                        <DetailCard label="Mileage" value={mileageText} />
+                        <DetailCard label="Odometer In" value={odometerIn} />
+                        <DetailCard label="Odometer Out" value={odometerOut} />
                     </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex gap-3 px-6 pb-6">
+                <div className="flex justify-end gap-3 px-6 pb-6">
                     <button
                         onClick={onClose}
-                        className="flex-1 py-2.5 rounded-xl border border-white/10 text-sm text-slate-400 hover:text-white hover:border-white/20 transition"
+                        className="px-4 py-2.5 rounded-xl border border-slate-200/70 dark:border-white/10 text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:text-white hover:border-slate-300 dark:hover:border-white/20 transition"
                     >
                         Close
-                    </button>
-                    <button
-                        onClick={handlePrint}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 font-semibold text-sm hover:opacity-90 transition"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                        </svg>
-                        Print QR
                     </button>
                 </div>
             </div>
@@ -179,18 +118,18 @@ function DeleteConfirmModal({ target, onClose, onConfirm, isLoading }) {
                             d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                     </svg>
                 </div>
-                <h3 className="text-base font-semibold text-white text-center">Delete vehicle?</h3>
-                <p className="mt-2 text-sm text-slate-400 text-center">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-white text-center">Delete vehicle?</h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 text-center">
                     {target?.plate_num} — {target?.name} {target?.model}
                 </p>
-                <p className="mt-1 text-xs text-slate-500 text-center">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 text-center">
                     This action cannot be undone.
                 </p>
                 <div className="flex gap-3 justify-end mt-6">
                     <button
                         onClick={onClose}
                         disabled={isLoading}
-                        className="px-4 py-2 rounded-lg border border-white/10 text-slate-300 hover:text-white hover:border-white/20 transition disabled:opacity-50"
+                        className="px-4 py-2 rounded-lg border border-slate-200/70 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:border-slate-300 dark:hover:border-white/20 transition disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -210,6 +149,26 @@ function DeleteConfirmModal({ target, onClose, onConfirm, isLoading }) {
                 </div>
             </div>
         </Modal>
+    );
+}
+
+function QRModal({ vehicle, onClose }) {
+    if (!vehicle) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl">
+                <h2 className="text-slate-900 dark:text-white">QR Modal</h2>
+
+                <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400">
+                    {vehicle.plate_num}
+                </p>
+
+                <button onClick={onClose}>
+                    Close
+                </button>
+            </div>
+        </div>
     );
 }
 
@@ -309,17 +268,15 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                 isLoading={isDeleting}
             />
 
-            {/* ✅ QR Modal — now rendered */}
             <QRModal
                 vehicle={qrTarget}
                 onClose={() => setQrTarget(null)}
             />
 
-            {/* ── Page Header ── */}
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-lg font-semibold text-white">Vehicles</h1>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Vehicles</h1>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         {vehicles?.total ?? 0} total vehicles in fleet
                     </p>
                 </div>
@@ -337,7 +294,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
             {/* ── Filters ── */}
             <div className="flex flex-wrap gap-3 mb-4">
                 <div className="relative flex-1 min-w-48">
-                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500"
+                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 dark:text-slate-400"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -347,13 +304,13 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search plate, name, model..."
-                        className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl bg-white/5 border border-white/10 text-slate-300 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 transition"
+                        className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl bg-white/5 border border-slate-200/70 dark:border-white/10 text-slate-600 dark:text-slate-300 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 transition"
                     />
                 </div>
                 <select
                     value={status}
                     onChange={e => setStatus(e.target.value)}
-                    className="px-3 py-2.5 text-sm rounded-xl bg-white/5 border border-white/10 text-slate-300 focus:outline-none focus:border-cyan-500/50 transition"
+                    className="px-3 py-2.5 text-sm rounded-xl bg-white/5 border border-slate-200/70 dark:border-white/10 text-slate-600 dark:text-slate-300 focus:outline-none focus:border-cyan-500/50 transition"
                 >
                     <option value="">All statuses</option>
                     {STATUSES.map(s => (
@@ -372,7 +329,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                             <tr className="border-b border-white/5">
                                 {TABLE_HEADERS.map(h => (
                                     <th key={h}
-                                        className="text-left text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-4 py-3 whitespace-nowrap">
+                                        className="text-left text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-4 py-3 whitespace-nowrap">
                                         {h}
                                     </th>
                                 ))}
@@ -400,7 +357,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                             ) : vehicleRows.length === 0 ? (
                                 <tr>
                                     {/* ✅ colSpan fixed to 9 (matches TABLE_HEADERS length) */}
-                                    <td colSpan={9} className="text-center py-16 text-slate-500 text-sm">
+                                    <td colSpan={9} className="text-center py-16 text-slate-500 dark:text-slate-400 text-sm">
                                         <svg className="w-10 h-10 mx-auto mb-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                                                 d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0zM13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1"/>
@@ -419,22 +376,22 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                     </td>
 
                                     {/* Name / Model */}
-                                    <td className="px-4 py-3 text-slate-300">
+                                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300">
                                         {v.name} {v.model}
                                     </td>
 
                                     {/* Year */}
-                                    <td className="px-4 py-3 text-slate-400">
+                                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 dark:text-slate-400">
                                         {v.year}
                                     </td>
 
                                     {/* Driver */}
-                                    <td className="px-4 py-3 text-slate-400">
+                                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 dark:text-slate-400">
                                         {v.driver?.name ?? <span className="text-slate-600">—</span>}
                                     </td>
 
                                     {/* ✅ Mileage — was missing */}
-                                    <td className="px-4 py-3 text-slate-400">
+                                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 dark:text-slate-400">
                                         {v.mileage
                                             ? <span>{Number(v.mileage).toLocaleString()} km</span>
                                             : <span className="text-slate-600">—</span>
@@ -442,7 +399,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                     </td>
 
                                     {/* Odometer In */}
-                                    <td className="px-4 py-3 text-slate-400">
+                                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 dark:text-slate-400">
                                         {v.present_in
                                             ? <span>{Number(v.present_in).toLocaleString()} km</span>
                                             : <span className="text-slate-600">—</span>
@@ -450,7 +407,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                     </td>
 
                                     {/* Odometer Out */}
-                                    <td className="px-4 py-3 text-slate-400">
+                                    <td className="px-4 py-3 text-slate-500 dark:text-slate-400 dark:text-slate-400">
                                         {v.present_out
                                             ? <span>{Number(v.present_out).toLocaleString()} km</span>
                                             : <span className="text-slate-600">—</span>
@@ -459,7 +416,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
 
                                     {/* Status */}
                                     <td className="px-4 py-3">
-                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${statusStyle[v.status] ?? 'bg-slate-500/10 text-slate-400'}`}>
+                                        <span className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${statusStyle[v.status] ?? 'bg-slate-500/10 text-slate-500 dark:text-slate-400 dark:text-slate-400'}`}>
                                             {v.status}
                                         </span>
                                     </td>
@@ -471,7 +428,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                             {/* ✅ QR Code button — was missing */}
                                             <button
                                                 onClick={() => setQrTarget(v)}
-                                                className="p-1.5 rounded-lg border border-white/10 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition"
+                                                className="p-1.5 rounded-lg border border-slate-200/70 dark:border-white/10 text-slate-500 dark:text-slate-400 dark:text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition"
                                                 title="Generate QR Code"
                                             >
                                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -483,7 +440,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                             {/* Edit button */}
                                             <button
                                                 onClick={() => openEdit(v)}
-                                                className="p-1.5 rounded-lg border border-white/10 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition"
+                                                className="p-1.5 rounded-lg border border-slate-200/70 dark:border-white/10 text-slate-500 dark:text-slate-400 dark:text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition"
                                                 title="Edit vehicle"
                                             >
                                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -495,7 +452,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                             {/* Delete button */}
                                             <button
                                                 onClick={() => setDeleteTarget(v)}
-                                                className="p-1.5 rounded-lg border border-white/10 text-slate-400 hover:text-red-400 hover:border-red-500/30 transition"
+                                                className="p-1.5 rounded-lg border border-slate-200/70 dark:border-white/10 text-slate-500 dark:text-slate-400 dark:text-slate-400 hover:text-red-400 hover:border-red-500/30 transition"
                                                 title="Delete vehicle"
                                             >
                                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -515,7 +472,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                 {/* ── Pagination ── */}
                 {(vehicles?.last_page ?? 0) > 1 && (
                     <div className="flex items-center justify-between border-t border-white/5 px-4 py-3">
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                             Showing {vehicles?.from ?? 0}–{vehicles?.to ?? 0} of {vehicles?.total ?? 0} vehicles
                         </p>
                         <div className="flex gap-1.5">
@@ -530,7 +487,7 @@ export default function VehiclesIndex({ vehicles, drivers, filters }) {
                                     className={`px-3 py-1.5 rounded-lg text-xs transition
                                         ${link.active
                                             ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                                            : 'border border-white/10 text-slate-400 hover:text-white hover:border-white/20 disabled:opacity-30'
+                                            : 'border border-slate-200/70 dark:border-white/10 text-slate-500 dark:text-slate-400 dark:text-slate-400 hover:text-slate-900 dark:text-white hover:border-slate-300 dark:hover:border-white/20 disabled:opacity-30'
                                         }`}
                                 />
                             ))}
