@@ -15,6 +15,9 @@ const statusStyle = {
 
 const skeletonRows = Array.from({ length: 6 });
 
+{/* a logic for making the vehicle table sorted in ascending order by default */}
+const [sortConfig, setSortConfig] = useState({ key: 'plate_num', direction: 'asc' });
+
 // ── Toast Component ──────────────────────────────────────────
 function Toast({ message, onClose }) {
     useEffect(() => {
