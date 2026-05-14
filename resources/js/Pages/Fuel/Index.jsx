@@ -305,7 +305,7 @@ export default function FuelIndex({ logs, vehicles, filters, stats, monthly, veh
         grid: { borderColor: 'rgba(255,255,255,0.05)', strokeDashArray: 4 },
         legend: { labels: { colors: '#94a3b8' } },
         tooltip: { theme: 'dark' },
-    };
+    };  
 
     const lineOpts = {
         chart: { type: 'line', background: 'transparent', toolbar: { show: false } },

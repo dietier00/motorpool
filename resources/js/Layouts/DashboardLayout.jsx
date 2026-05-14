@@ -85,7 +85,7 @@ export default function DashboardLayout({ children, title = 'Dashboard' }) {
                 </nav>
 
                 {/* Profile Card Bottom component */}
-                <div className={`p-2 m-4 rounded-xl ${isDark ? 'bg-slate-800/30 border border-[#255F38]' : 'bg-slate-50 border border-red-500'}`}>
+                <div className={`p-2 m-4 rounded-xl ${isDark ? 'bg-slate-800/30 border border-[#255F38]' : 'bg-slate-50 border border-zinc-400'}`}>
                     <div className="flex items-center gap-3">
                         <img src={`https://ui-avatars.com/api/?name=${auth?.user?.name || 'A'}&background=random`} alt="Avatar" className="h-10 w-10 rounded-xl object-cover shadow-sm" />
                         <div className="flex-1 min-w-0">
