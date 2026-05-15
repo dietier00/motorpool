@@ -17,13 +17,20 @@ services:
       - key: SESSION_DRIVER
         value: cookie
       - key: DB_CONNECTION
-        # Set to sqlite for SQLite or provide PostgreSQL/MySQL connection
         value: mysql
+      - key: DB_HOST
+        value: serverless-eu-central-1.sysp0000.db1.skysql.com
+      - key: DB_PORT
+        value: "4013"
+      - key: DB_USERNAME
+        value: dbpwf11756350
+      - key: DB_PASSWORD
+        value: McsBZ7fk7tZP[(nEz5XCVK0
       - key: APP_URL
         value: https://scpamotorpool.onrender.com
 databases:
-  - name: vehicle-db
-    databaseName: vehicle_management
+  - name: mysql
+    databaseName: fleeterz
     plan: standard
     # Uncomment if using PostgreSQL
     # region: oregon
