@@ -13,7 +13,7 @@ if [ -z "$APP_KEY" ]; then
 fi
 
 # Run migrations automatically
-# php /app/artisan migrate --force
+ php /app/artisan migrate --force
 
 # 3. Production Optimizations
 # php /app/artisan config:cache
