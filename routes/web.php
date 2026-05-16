@@ -49,30 +49,21 @@ $dashboardData = function () {
     $trendEnd = now()->endOfMonth();
 
     // Query actual maintenance records and sum costs
-    $maintenanceRecords = \App\Models\Maintenance::where('service_type', 'maintenance')
-        ->whereBetween('service_date', [$trendStart, $trendEnd])
-        ->get(['service_date', 'cost']);
-
-    $inspectionRecords = \App\Models\Maintenance::where('service_type', 'inspection')
-        ->whereBetween('service_date', [$trendStart, $trendEnd])
-        ->get(['service_date', 'cost']);
+    $allMaintenanceRecords = \App\Models\Maintenance::whereBetween('service_date', [$trendStart, $trendEnd])
+        ->get(['service_date', 'cost', 'service_type']);
 
     $fuelRecords = \App\Models\FuelLog::whereBetween('date', [$trendStart, $trendEnd])
         ->get(['date', 'total_cost']);
 
-    // Populate maintenance trend (sum costs)
-    foreach ($maintenanceRecords as $record) {
+    // Populate maintenance & inspection trend (sum costs)
+    foreach ($allMaintenanceRecords as $record) {
         $monthKey = \Illuminate\Support\Carbon::parse($record->service_date)->format('Y-m');
         if (isset($indexByMonth[$monthKey])) {
-            $maintenanceTrend[$indexByMonth[$monthKey]] += $record->cost ?? 0;
-        }
-    }
-
-    // Populate inspection trend (sum costs)
-    foreach ($inspectionRecords as $record) {
-        $monthKey = \Illuminate\Support\Carbon::parse($record->service_date)->format('Y-m');
-        if (isset($indexByMonth[$monthKey])) {
-            $inspectionTrend[$indexByMonth[$monthKey]] += $record->cost ?? 0;
+            if (stripos($record->service_type, 'inspect') !== false) {
+                $inspectionTrend[$indexByMonth[$monthKey]] += $record->cost ?? 0;
+            } else {
+                $maintenanceTrend[$indexByMonth[$monthKey]] += $record->cost ?? 0;
+            }
         }
     }
 
@@ -194,8 +185,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/maintenance', [MaintenanceController::class, 'store'])->name('maintenance.store');
     Route::put('/maintenance/{maintenance}', [MaintenanceController::class, 'update'])->name('maintenance.update');
     Route::delete('/maintenance/{maintenance}', [MaintenanceController::class, 'destroy'])->name('maintenance.destroy');
-    Route::get('/history', [\App\Http\Controllers\HistoryController::class, 'index'])->name('history.index');
     Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
+    
+    // User Role Management (Admin only)
+    Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {
+        Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+        Route::put('/users/{user}', [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+    });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
